@@ -1,69 +1,48 @@
 <template>
-
-    <el-menu
-      default-active="2"
-      class="el-menu-vertical-demo"
-      :collapse="appStore.isCollapse"
-      @open="handleOpen"
-      @close="handleClose"
-    >
-      <el-sub-menu index="1">
-        <template #title>
-          <el-icon><location /></el-icon>
-          <span>Navigator One</span>
-        </template>
-        <el-menu-item-group>
-          <template #title><span>Group One</span></template>
-          <el-menu-item index="1-1">item one</el-menu-item>
-          <el-menu-item index="1-2">item two</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="Group Two">
-          <el-menu-item index="1-3">item three</el-menu-item>
-        </el-menu-item-group>
-        <el-sub-menu index="1-4">
-          <template #title><span>item four</span></template>
-          <el-menu-item index="1-4-1">item one</el-menu-item>
-        </el-sub-menu>
-      </el-sub-menu>
-      <el-menu-item index="2">
-        <el-icon><icon-menu /></el-icon>
-        <template #title>Navigator Two</template>
-      </el-menu-item>
-      <el-menu-item index="3" disabled>
-        <el-icon><document /></el-icon>
-        <template #title>Navigator Three</template>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <el-icon><setting /></el-icon>
-        <template #title>Navigator Four</template>
-      </el-menu-item>
+    <el-menu class="el-menu-vertical-demo" router :collapse="appStore.isCollapse" @open="handleOpen" @close="handleClose">
+        <div v-for="item of menuList">
+            <el-menu-item v-if="item.children.length <= 1" :index="item.path">
+                <el-icon>
+                    <setting />
+                </el-icon>
+                <span>{{ item.meta.locale }}</span>
+            </el-menu-item>
+            <el-sub-menu v-else :index="item.path">
+                <template #title>
+                    <el-icon>
+                        <location />
+                    </el-icon>
+                    <span>{{ item.meta.locale }}</span>
+                </template>
+                <el-menu-item v-for="itemChild of item.children" :index="`${itemChild.path}`">{{itemChild.meta.locale}}</el-menu-item>
+            </el-sub-menu>
+        </div>
     </el-menu>
-  </template>
+</template>
   
-  <script lang="ts" setup>
-//   import { ref } from 'vue'
-  import { useAppStore } from '@/store'
+<script lang="ts" setup>
+import { reactive } from 'vue'
+import { useAppStore } from '@/store'
+import { menuList as list } from '@/api/userApi'
 //   import { storeToRefs } from 'pinia'
-  import {
-    Document,
-    Menu as IconMenu,
+import {
     Location,
     Setting,
-  } from '@element-plus/icons-vue'
-  
-  const appStore = useAppStore()
-//   const {isCollapse} = storeToRefs(appStore)
-  const handleOpen = (key: string, keyPath: string[]) => {
+} from '@element-plus/icons-vue'
+
+const appStore = useAppStore()
+const menuList = reactive(list())
+const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
-  }
-  const handleClose = (key: string, keyPath: string[]) => {
+}
+const handleClose = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
-  }
-  </script>
+}
+</script>
   
-  <style lang="scss" scoped>
-  .el-menu-vertical-demo {
+<style lang="scss" scoped>
+.el-menu-vertical-demo {
     // width: 200px;
     min-height: 100vh;
-  }
-  </style>
+}
+</style>
