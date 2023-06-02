@@ -6,7 +6,7 @@ export const guard = (router:Router)=>{
 }
 
 function beforeEach(router:Router){
-    router.beforeEach((from,to)=>{
+    router.beforeEach((from)=>{
         if(from.name != 'login'){
             if(!isLogin()){
                 router.push('/login')
